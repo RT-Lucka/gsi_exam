@@ -1,0 +1,20 @@
+---
+- name: Installer et démarrer Apache
+  hosts:  lucka2
+  become: yes
+  tasks:
+    - name: Mettre à jour la liste des paquets
+      apt:
+        update_cache: yes
+
+    - name: Installer Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Démarrer et activer Apache
+      systemd:
+        name: apache2
+        enabled: yes
+        state: started
+

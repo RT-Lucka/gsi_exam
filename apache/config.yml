@@ -1,0 +1,43 @@
+---
+- name: Install and configure Apache to listen on port 8081
+  hosts: lucka2
+  become: true
+  tasks:
+    - name: Install Apache2 (if not already installed)
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure Apache2 service is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Modify ports.conf to listen on port 8081
+      lineinfile:
+        path: /etc/apache2/ports.conf
+        regexp: '^Listen 80'
+        line: 'Listen 8081'
+        create: yes
+
+    - name: Modify default site to use port 8081
+      lineinfile:
+        path: /etc/apache2/sites-available/000-default.conf
+        regexp: '^<VirtualHost \*:80>'
+        line: '<VirtualHost *:8081>'
+        create: yes
+
+    - name: Restart Apache2 to apply the changes
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Verify Apache2 configuration
+      command: apache2ctl configtest
+      register: apache_configtest
+      changed_when: false
+
+    - name: Show Apache2 configtest result
+      debug:
+        msg: "Apache configtest result: {{ apache_configtest.stdout }}"
