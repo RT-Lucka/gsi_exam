@@ -1,0 +1,15 @@
+# Utiliser une image Ubuntu
+FROM ubuntu:latest
+
+# Mettre à jour et installer Apache
+RUN apt update && apt install -y apache2
+
+# Copier un fichier HTML personnalisé
+COPY index.html /var/www/html/index.html
+
+# Exposer le port 80
+EXPOSE 80
+
+# Lancer Apache au démarrage du conteneur
+CMD ["apachectl", "-D", "FOREGROUND"]
+

@@ -1,0 +1,21 @@
+---
+- name: Installer et configurer Apache
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installer Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Démarrer Apache
+      systemd:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Copier un fichier index.html
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+
